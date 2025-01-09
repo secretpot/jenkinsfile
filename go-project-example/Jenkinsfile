@@ -8,8 +8,8 @@ pipeline {
     }
     parameters {
         string(name: 'BUILD_BRANCH', defaultValue: 'main', description: '请输入要的构建分支名')
-        booleanParam(name: 'build_cmd', defaultValue: 'false', description: '是否构建命令行工具')
-        booleanParam(name: 'build_server', defaultValue: 'false', description: '是否构建服务端')
+        booleanParam(name: 'build_cmd', defaultValue: false, description: '是否构建命令行工具')
+        booleanParam(name: 'build_server', defaultValue: false, description: '是否构建服务端')
     }
 
     stages {
@@ -24,7 +24,11 @@ pipeline {
             parallel {
                 stage('Build CMD') {
                     when {
-                        environment(name: 'build_cmd', value: true)
+                        // environment(name: 'build_cmd', value: true)
+                        expression {
+                            // 当BUILD_SERVER参数为真时，执行此阶段
+                            return params.BUILD_SERVER
+                        }
                     }
                     steps {
                         script {
@@ -38,7 +42,11 @@ pipeline {
                 }
                 stage('BUILD SERVER') {
                     when {
-                        environment(name: 'build_server', value: true)
+                        // environment(name: 'build_server', value: true)
+                        expression {
+                            // 当BUILD_SERVER参数为真时，执行此阶段
+                            return params.BUILD_SERVER
+                        }
                     }
                     steps {
                         script {
