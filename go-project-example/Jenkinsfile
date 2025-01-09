@@ -35,7 +35,8 @@ pipeline {
                             params['BUILD_BRANCH'] = "${BUILD_BRANCH}"
                             params['OWNER'] = 'secretpot'
                             params['REPO'] = 'go-project-example-cmd'
-                            build.builderForGithub.buildGolangProject(params)
+                            def builder = new build.builderForGithub()
+                            builder.buildGolangProject(params)
                         }
                     }
                 }
@@ -52,7 +53,8 @@ pipeline {
                             params['BUILD_BRANCH'] = "${BUILD_BRANCH}"
                             params['OWNER'] = 'secretpot'
                             params['REPO'] = 'go-project-example-server'
-                            build.builderForGithub.buildGolangProject(params)
+                            def builder = new build.builderForGithub()
+                            builder.buildGolangProject(params)
                         }
                     }
                 }
