@@ -7,9 +7,9 @@ pipeline {
         }
     }
     parameters {
-        stringParam(name: 'BUILD_BRANCH', defaultValue: 'main', description: '请输入要的构建分支名')
-        booleanParam(name: 'build_cmd', defaultValue: false, description: '是否构建命令行工具')
-        booleanParam(name: 'build_server', defaultValue: false, description: '是否构建服务端')
+        string(name: 'BUILD_BRANCH', defaultValue: 'main', description: '请输入要的构建分支名')
+        booleanParam(name: 'build_cmd', defaultValue: 'false', description: '是否构建命令行工具')
+        booleanParam(name: 'build_server', defaultValue: 'false', description: '是否构建服务端')
     }
 
     stages {
