@@ -1,0 +1,63 @@
+@Library('sharelib') _
+
+pipeline {
+    agent {
+        node {
+            label 'go'
+        }
+    }
+    parameters {
+        string(name: 'BUILD_BRANCH', defaultValue: 'main', description: '请输入要的构建分支名')
+        booleanParam(name: 'build_cmd', defaultValue: false, description: '是否构建命令行工具')
+        booleanParam(name: 'build_server', defaultValue: false, description: '是否构建服务端')
+    }
+
+    stages {
+        stage('Check GO VERSION') {
+            steps {
+                script {
+                    sh 'go version'
+                }
+            }
+        }
+        stage('Build') {
+            parallel {
+                stage('Build CMD') {
+                    when {
+                        environment(name: 'build_cmd', value: true)
+                    }
+                    steps {
+                        script {
+                            def params = [:]
+                            params['BUILD_BRANCH'] = "${BUILD_BRANCH}"
+                            params['OWNER'] = 'secretpot'
+                            params['REPO'] = 'go-project-example-cmd'
+                            build.builderForGithub.buildGolangProject(params)
+                        }
+                    }
+                }
+                stage('BUILD SERVER') {
+                    when {
+                        environment(name: 'build_server', value: true)
+                    }
+                    steps {
+                        script {
+                            def params = [:]
+                            params['BUILD_BRANCH'] = "${BUILD_BRANCH}"
+                            params['OWNER'] = 'secretpot'
+                            params['REPO'] = 'go-project-example-server'
+                            build.builderForGithub.buildGolangProject(params)
+                        }
+                    }
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                script {
+                    sh 'scripts/test.sh'
+                }
+            }
+        }
+    }
+}
