@@ -26,8 +26,7 @@ pipeline {
                     when {
                         // environment(name: 'build_cmd', value: true)
                         expression {
-                            // 当BUILD_SERVER参数为真时，执行此阶段
-                            return params.BUILD_SERVER
+                            return params.build_cmd
                         }
                     }
                     steps {
@@ -44,8 +43,7 @@ pipeline {
                     when {
                         // environment(name: 'build_server', value: true)
                         expression {
-                            // 当BUILD_SERVER参数为真时，执行此阶段
-                            return params.BUILD_SERVER
+                            return params.build_server
                         }
                     }
                     steps {
@@ -57,13 +55,6 @@ pipeline {
                             build.builderForGithub.buildGolangProject(params)
                         }
                     }
-                }
-            }
-        }
-        stage('Test') {
-            steps {
-                script {
-                    sh 'scripts/test.sh'
                 }
             }
         }
