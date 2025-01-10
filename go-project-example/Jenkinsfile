@@ -22,12 +22,12 @@ pipeline {
             }
         }
         stage('Fetch code') {
-            steps {
-                when {
-                    expression {
-                        return params.BUILD_CMD || params.BUILD_SERVER
-                    }
+            when {
+                expression {
+                    return params.BUILD_CMD || params.BUILD_SERVER
                 }
+            }
+            steps {
                 script {
                     new build.builderForGithub().fetchCode('secretpot', 'go-project-example', "${params.BUILD_BRANCH}")
                 }
@@ -41,8 +41,10 @@ pipeline {
                             return params.BUILD_CMD
                         }
                     }
-                    script {
-                        sh "./scrpts/cmd_build.sh"
+                    steps {
+                        script {
+                            sh "./scrpts/cmd_build.sh"
+                        }
                     }
                 }
                 stage('BUILD SERVER') {
