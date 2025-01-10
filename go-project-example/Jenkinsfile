@@ -67,10 +67,30 @@ pipeline {
                     return params.TEST
                 }
             }
-            steps {
-                script {
-                    sh "./scripts/cmd_test.sh"
-                    sh "./scripts/server_test.sh"
+            parallel {
+                stage('Test CMD') {
+                    when {
+                        expression {
+                            return params.BUILD_CMD
+                        }
+                    }
+                    steps {
+                        script {
+                            sh "./scripts/cmd_test.sh"
+                        }
+                    }
+                }
+                stage('Test SERVER') {
+                    when {
+                        expression {
+                            return params.BUILD_SERVER
+                        }
+                    }
+                    steps {
+                        script {
+                            sh "./scripts/server_test.sh"
+                        }
+                    }
                 }
             }
         }
