@@ -21,6 +21,18 @@ pipeline {
                 }
             }
         }
+        stage('Fetch code') {
+            steps {
+                when {
+                    expression {
+                        return params.BUILD_CMD || params.BUILD_SERVER
+                    }
+                }
+                script {
+                    new build.builderForGithub().fetchCode('secretpot', 'go-project-example', "${params.BUILD_BRANCH}")
+                }
+            }       
+        }
         stage('Build') {
             parallel {
                 stage('Build CMD') {
@@ -29,17 +41,7 @@ pipeline {
                             return params.BUILD_CMD
                         }
                     }
-                    steps {
-                        script {
-                            def params = [:]
-                            params['BUILD_BRANCH'] = "${BUILD_BRANCH}"
-                            params['OWNER'] = 'secretpot'
-                            params['REPO'] = 'go-project-example'
-                            params['TARGET'] = 'cmd'
-                            def builder = new build.builderForGithub()
-                            builder.buildGolangProject(params)
-                        }
-                    }
+                    sh "./scrpts/cmd_build.sh"
                 }
                 stage('BUILD SERVER') {
                     when {
@@ -48,15 +50,7 @@ pipeline {
                         }
                     }
                     steps {
-                        script {
-                            def params = [:]
-                            params['BUILD_BRANCH'] = "${BUILD_BRANCH}"
-                            params['OWNER'] = 'secretpot'
-                            params['REPO'] = 'go-project-example'
-                            params['TARGET'] = 'server'
-                            def builder = new build.builderForGithub()
-                            builder.buildGolangProject(params)
-                        }
+                        sh "./scrip/server_build.sh"
                     }
                 }
             }
