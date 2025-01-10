@@ -43,7 +43,7 @@ pipeline {
                     }
                     steps {
                         script {
-                            sh "./scrpts/cmd_build.sh"
+                            sh "./scripts/cmd_build.sh"
                         }
                     }
                 }
@@ -55,7 +55,7 @@ pipeline {
                     }
                     steps {
                         script {
-                            sh "./scrip/server_build.sh"
+                            sh "./scripts/server_build.sh"
                         }
                     }
                 }
