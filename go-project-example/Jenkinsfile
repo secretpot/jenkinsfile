@@ -8,8 +8,9 @@ pipeline {
     }
     parameters {
         string(name: 'BUILD_BRANCH', defaultValue: 'main', description: '请输入要的构建分支名')
-        booleanParam(name: 'build_cmd', defaultValue: false, description: '是否构建命令行工具')
-        booleanParam(name: 'build_server', defaultValue: false, description: '是否构建服务端')
+        booleanParam(name: 'BUILD_CMD', defaultValue: false, description: '是否构建命令行工具')
+        booleanParam(name: 'BUILD_SERVER', defaultValue: false, description: '是否构建服务端')
+        booleanParam(name: 'TEST', defaultValue: false, description: '是否进行测试')
     }
 
     stages {
@@ -24,9 +25,8 @@ pipeline {
             parallel {
                 stage('Build CMD') {
                     when {
-                        // environment(name: 'build_cmd', value: true)
                         expression {
-                            return params.build_cmd
+                            return params.BUILD_CMD
                         }
                     }
                     steps {
@@ -34,7 +34,8 @@ pipeline {
                             def params = [:]
                             params['BUILD_BRANCH'] = "${BUILD_BRANCH}"
                             params['OWNER'] = 'secretpot'
-                            params['REPO'] = 'go-project-example-cmd'
+                            params['REPO'] = 'go-project-example'
+                            params['TARGET'] = 'cmd'
                             def builder = new build.builderForGithub()
                             builder.buildGolangProject(params)
                         }
@@ -42,9 +43,8 @@ pipeline {
                 }
                 stage('BUILD SERVER') {
                     when {
-                        // environment(name: 'build_server', value: true)
                         expression {
-                            return params.build_server
+                            return params.BUILD_SERVER
                         }
                     }
                     steps {
@@ -52,11 +52,25 @@ pipeline {
                             def params = [:]
                             params['BUILD_BRANCH'] = "${BUILD_BRANCH}"
                             params['OWNER'] = 'secretpot'
-                            params['REPO'] = 'go-project-example-server'
+                            params['REPO'] = 'go-project-example'
+                            params['TARGET'] = 'server'
                             def builder = new build.builderForGithub()
                             builder.buildGolangProject(params)
                         }
                     }
+                }
+            }
+        }
+        stage('Test') {
+            when {
+                expression {
+                    return params.TEST
+                }
+            }
+            steps {
+                script {
+                    sh "scrpts/cmd_test.sh"
+                    sh "scrip/server_test.sh"
                 }
             }
         }
