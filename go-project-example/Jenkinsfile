@@ -41,7 +41,9 @@ pipeline {
                             return params.BUILD_CMD
                         }
                     }
-                    sh "./scrpts/cmd_build.sh"
+                    script {
+                        sh "./scrpts/cmd_build.sh"
+                    }
                 }
                 stage('BUILD SERVER') {
                     when {
@@ -50,7 +52,9 @@ pipeline {
                         }
                     }
                     steps {
-                        sh "./scrip/server_build.sh"
+                        script {
+                            sh "./scrip/server_build.sh"
+                        }
                     }
                 }
             }
