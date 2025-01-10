@@ -69,8 +69,8 @@ pipeline {
             }
             steps {
                 script {
-                    sh "scripts/cmd_test.sh"
-                    sh "scripts/server_test.sh"
+                    sh "./scripts/cmd_test.sh"
+                    sh "./scripts/server_test.sh"
                 }
             }
         }
